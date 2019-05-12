@@ -1,14 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { compose, withProps } from "recompose";
+import { compose, withProps, withState, withHandlers } from "recompose";
 import {
   withScriptjs,
   withGoogleMap,
   GoogleMap,
-  Marker
+  Marker,
 } from "react-google-maps";
 
-const Map = compose(
+const MapComponent = compose(
   withProps({
     /**
      * Note: create and replace your own key in the Google console.
@@ -21,17 +21,23 @@ const Map = compose(
     containerElement: <div style={{ height: `400px` }} />,
     mapElement: <div style={{ height: `100%` }} />
   }),
+  
   withScriptjs,
   withGoogleMap
 )(props => (
-  <GoogleMap defaultZoom={8} defaultCenter={{ lat: -34.397, lng: 150.644 }}>
-    {props.isMarkerShown && (
-      <Marker position={{ lat: -34.397, lng: 150.644 }} />
-    )}
+  <GoogleMap defaultZoom={13} defaultCenter={{ lat: 37.774, lng: -122.4313 }}>
+  {
+    props.data.map(category => (
+        props.isMarkerShown && (
+          <Marker position={{ lat: category.geometry.coordinates[0], lng: category.geometry.coordinates[1] }} />
+        )
+                    ))
+    }
+
   </GoogleMap>
 ));
 
-ReactDOM.render(<Map isMarkerShown />, document.getElementById("root"));
+ReactDOM.render(<MapComponent isMarkerShown />, document.getElementById("root"));
 
-export default Map;
+export default MapComponent;
 
