@@ -1,0 +1,33 @@
+.Button {
+  padding: 20px;
+  display: inline-block;
+  box-sizing: border-box;
+  color: black;
+  font-size: 20pt;
+  font-family: sans-serif;
+  margin-left: 5px;
+  border: 1px solid gray;
+  border-radius: 40px;
+  transition: 0.1s;
+  box-shadow: inset -3px -3px 1px 1px rgba(100, 100, 100, 0.3);
+  cursor: pointer;
+  min-width: 130px;
+  padding-top: 20px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.Button:active {
+  box-shadow: inset 3px 3px 1px 1px rgba(100, 100, 100, 0.3);
+  padding-top: 23px;
+}
+
+.Button--gray {
+  color: white;
+  background: rgba(127, 127, 127, 0.8);
+}
+
+.Button--primary {
+  color: white;
+  background: rgba(0, 127, 0, 0.8);
+}

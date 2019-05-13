@@ -7,6 +7,7 @@ import {
   GoogleMap,
   Marker,
 } from "react-google-maps";
+import Button from '../Button/Button.js';
 const { MarkerWithLabel } = require("react-google-maps/lib/components/addons/MarkerWithLabel");
 const google = window.google;
 
@@ -29,6 +30,7 @@ const MapComponent = compose(
         isMarkerShown: true,
         markerPosition: null,
          isOpen: false,
+         infoOpen: false,
       }), {
         onMapClick: ({ isMarkerShown }) => (e) => ({
             markerLat: e.latLng.lat(),
@@ -38,24 +40,42 @@ const MapComponent = compose(
     onToggleOpen: ({ isOpen }) => () => ({
       isOpen: !isOpen,
     }),
+        onMarkerClick: ({infoOpen}) => (e) => ({
+      infoOpen: !infoOpen,
+            currentMarkerLat: e.latLng.lat(),
+            currentMarkerLng: e.latLng.lng(),
+    }),
   }),
   withScriptjs,
   withGoogleMap
 )(props => (
+<div>
   <GoogleMap defaultZoom={13} defaultCenter={{ lat: 37.774, lng: -122.4313 }} onClick={props.onMapClick}>
   //goes through data to make markers
+  // do i need an array of markers so i can reference them?
   {
     props.data.map(category => (
         props.isMarkerShown && (
-          <Marker position={{ lat: category.geometry.coordinates[0], lng: category.geometry.coordinates[1] }} />
+          <Marker position={{ lat: category.geometry.coordinates[0], lng: category.geometry.coordinates[1] }} onClick={props.onMarkerClick}/>
         )
                     ))
     }
     //click and marker appears
     {props.isMarkerShown && (
-          <Marker position={{ lat: props.markerLat, lng: props.markerLng }} />
+          <Marker position={{ lat: props.markerLat, lng: props.markerLng }} onClick={props.onMarkerClick}/>
+        )}
+        
+          //this only reports if infoOpen is true, not every time marker is clicked
+        {props.infoOpen && (
+        <Button>
+        marker {props.currentMarkerLat}, {props.currentMarkerLng} was clicked on
+        </Button>
         )}
   </GoogleMap>
+      <div>
+
+      </div>
+  </div>
 ));
 
 ReactDOM.render(<MapComponent isMarkerShown />, document.getElementById("root"));

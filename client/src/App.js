@@ -80,6 +80,8 @@ class App extends Component {
           </Switch>
           <MapComponent isMarkerShown='true' data={this.state.data} lat='37.77' lng='-122.4'/>
           {console.log(this.state.data)}
+          <div className="space">
+          </div>
         </div>
 
       </div>

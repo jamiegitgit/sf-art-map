@@ -2,11 +2,8 @@ const path = require('path');
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
-var cors = require('cors');//
 const app = express();
 app.use(express.json());
-
-app.use(cors());//
 
 /// YOUR ROUTES GO HERE!
 
