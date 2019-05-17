@@ -64,6 +64,51 @@ class App extends Component {
         data: exampleData,
   };
 
+  componentDidMount() {
+    this.fetchArtListing();
+  }
+
+  fetchArtListing() {
+    console.log('Fetching data from API');
+    fetch('https://data.sfgov.org/resource/7rjr-9n9w.json')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Got data back', data);
+        //now reformat data
+        let reformattedArtCollection={"type": "FeatureCollection",
+                                      "features": []}
+        for (let artpiece of data){
+            let reformattedArtPiece= {
+              "type": "Feature",
+              "properties": {
+                    "title": artpiece.display_title,
+                    "artist": artpiece.artist,
+                    "date": artpiece.creation_date,
+                    "medium": artpiece.media_support,
+                    "size": artpiece.display_dimensions,
+                    "location": artpiece.facility+ ", " +  artpiece.location_description,
+                    "address": artpiece.street_address
+                    },
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                   (artpiece.point ? artpiece.point.latitude: null),
+                   (artpiece.point ? artpiece.point.longitude: null)
+
+                ]
+              }
+            }
+            reformattedArtCollection.features.push(reformattedArtPiece)
+        }
+        console.log("art coolection", reformattedArtCollection)
+
+        
+        this.setState({
+            data: reformattedArtCollection,
+        });
+      });
+  }
+
   render() {
     return (
       <div className="App">

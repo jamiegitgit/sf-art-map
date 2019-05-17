@@ -9,7 +9,7 @@ export class MapContainer extends Component {
     highlightedMarker: null,
     showingUserMarker: false,
     userMarkerLat: null,
-    userMarkerLat: null,
+    userMarkerLng: null,
   };
   
 
@@ -59,13 +59,19 @@ export class MapContainer extends Component {
       <Map style={style} google={this.props.google} zoom={13} initialCenter={{lat: 37.773972, lng: -122.431297}} onClick={this.onMapClicked}        onReady={this.fetchData}>
 
       {
-        this.props.data.features.map((category, index) => (
+        var markers= this.props.data.features.map((category, index) => (
           <Marker
+             key= {index}
              label={this.state.highlightedMarker === index ?
                 'X' : 'O'
              }
-             name=<div><h4>{category.properties.name}</h4> 
-             <h5> artist: {category.properties.artist} </h5></div>
+             name=<div><h4>{category.properties.title}</h4> 
+             <h5> artist: {category.properties.artist} </h5>
+             <h5> date: {category.properties.date} </h5>
+             <h5> medium: {category.properties.medium} </h5>
+             <h5> size: {category.properties.size} </h5>
+             <h5> location: {category.properties.location} </h5>
+             <h5> address: {category.properties.address} </h5></div>
              position={{ lat: category.geometry.coordinates[0], 
              lng: category.geometry.coordinates[1] }} 
             onClick={this.onMarkerClick} />
