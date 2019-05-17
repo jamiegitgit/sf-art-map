@@ -159,7 +159,7 @@ MongoClient.connect(MONGODB_URL, {useNewUrlParser: true}, (err, client) => {
   db = client.db(mongoDbDatabaseName);
 
   // Start the server
-  const PORT = process.env.PORT || 8080;
+  const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`
       *********************************************

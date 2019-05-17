@@ -6,15 +6,17 @@ import './App.css';
 import LandingPage from './components/pages/LandingPage/LandingPage.js';
 import Blog from './components/pages/Blog/Blog.js';
 import WriteArticle from './components/pages/WriteArticle/WriteArticle.js';
-import MapComponent from './components/MapComponent/MapComponent.js';
-
+import MapContainer from './components/MapContainer/MapContainer.js';
 
 let exampleData= {
   "type": "FeatureCollection",
   "features": [
     {
       "type": "Feature",
-      "properties": {},
+      "properties": {
+            "name": "mural 1",
+            "artist": "bob ross"
+            },
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -26,7 +28,10 @@ let exampleData= {
     },
     {
       "type": "Feature",
-      "properties": {},
+      "properties": {
+            "name": "mural 2",
+            "artist": "keith Harring"
+            },
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -38,7 +43,10 @@ let exampleData= {
     },
     {
       "type": "Feature",
-      "properties": {},
+      "properties": {
+            "name": "sculpture 1",
+            "artist": "doug jones"
+            },
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -51,19 +59,13 @@ let exampleData= {
   ]
 }
 
-
 class App extends Component {
-  state = {
-    data: exampleData.features,
-  }
-  
-  
+   state = {
+        data: exampleData,
+  };
+
   render() {
     return (
-    <div>
-          <script>
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDN5mCz2_1PMlG3Z7eZZ8NPp9I6rgEzKMQ=3.31&libraries=geometry,drawing,places"
-      </script>
       <div className="App">
         <nav className="App-navigation">
           <h1 className="App-title">MERN Starter</h1>
@@ -78,13 +80,8 @@ class App extends Component {
             <Route exact path='/blog/' component={Blog} />
             <Route exact path='/write/' component={WriteArticle} />
           </Switch>
-          <MapComponent isMarkerShown='true' data={this.state.data} lat='37.77' lng='-122.4'/>
-          {console.log(this.state.data)}
-          <div className="space">
-          </div>
+          <MapContainer data={this.state.data}/>
         </div>
-
-      </div>
 
       </div>
     );
