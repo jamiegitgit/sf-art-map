@@ -115,7 +115,7 @@ console.log(roughObjSize)
         
         console.log("newly set data is", this.state.data)
       
-      
+      //still want map to render from mongo data, not just api data
       
           fetch('/api/mongodb/ArtCollection/', {
         method: 'POST',

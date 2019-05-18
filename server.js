@@ -61,6 +61,7 @@ app.put('/api/mongodb/:collectionName/', (request, response) => {
   const collectionName = request.params.collectionName;
   const data = request.body;
   const query = request.query;
+  console.log("query:", query);
 
   // Due to a requirement of MongoDB, whenever we query based on _id field, we
   // have to do it like this using ObjectId
