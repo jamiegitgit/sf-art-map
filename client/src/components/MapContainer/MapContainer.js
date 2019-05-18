@@ -57,9 +57,9 @@ export class MapContainer extends Component {
     return (
     <div>
       <Map style={style} google={this.props.google} zoom={13} initialCenter={{lat: 37.773972, lng: -122.431297}} onClick={this.onMapClicked}        onReady={this.fetchData}>
-
+{console.log("our data looks like:", this.props.data)}
       {
-        var markers= this.props.data.features.map((category, index) => (
+        this.props.data.map((category, index) => (
           <Marker
              key= {index}
              label={this.state.highlightedMarker === index ?
@@ -86,17 +86,8 @@ export class MapContainer extends Component {
              <h5>input artist name:</h5></div>
              position={{ lat: this.state.userMarkerLat, 
              lng: this.state.userMarkerLng}} 
-            onClick={this.onMarkerClick} >
-            
-                    <InfoWindow
-                    
-                            visible={this.state.showingUserMarker}>
-                            {console.log("is this getting accessed?")}
-                        <div>
-                          <h1>{this.state.selectedPlace.name}</h1>
-                        </div>
-                    </InfoWindow>
-            </Marker >
+            onClick={this.onMarkerClick} />
+
             )}
         <InfoWindow
           marker={this.state.activeMarker}

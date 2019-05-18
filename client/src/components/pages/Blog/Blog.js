@@ -12,14 +12,15 @@ class Blog extends Component {
   }
 
   fetchPosts() {
-    console.log('Fetching data from API');
-    fetch('/api/mongodb/blogposts/')
+    console.log('Fetching data from Mongo');
+    fetch('/api/mongodb/ArtCollection/')
       .then(response => response.json())
       .then(data => {
         console.log('Got data back', data);
         this.setState({
           blogPosts: data,
         });
+        console.log("art collection", this.state.blogPosts)
       });
   }
 
@@ -77,7 +78,7 @@ class Blog extends Component {
             <div className="Blog-article" key={post._id}>
 
               <h1>{post.title}</h1>
-              <p>{post.text}</p>
+              <p>{post.type}</p>
 
               <div className="Blog-articleActions">
                 <div onClick={() => this.deleteArticle(post._id)}>

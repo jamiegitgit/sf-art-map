@@ -8,9 +8,7 @@ import Blog from './components/pages/Blog/Blog.js';
 import WriteArticle from './components/pages/WriteArticle/WriteArticle.js';
 import MapContainer from './components/MapContainer/MapContainer.js';
 
-let exampleData= {
-  "type": "FeatureCollection",
-  "features": [
+let exampleData= [
     {
       "type": "Feature",
       "properties": {
@@ -57,7 +55,7 @@ let exampleData= {
       }
     }
   ]
-}
+
 
 class App extends Component {
    state = {
@@ -65,7 +63,12 @@ class App extends Component {
   };
 
   componentDidMount() {
+      this._isMounted = true;
     this.fetchArtListing();
+  }
+  
+    componentWillUnmount() {
+    this._isMounted = false;
   }
 
   fetchArtListing() {
@@ -73,14 +76,14 @@ class App extends Component {
     fetch('https://data.sfgov.org/resource/7rjr-9n9w.json')
       .then(response => response.json())
       .then(data => {
-        console.log('Got data back', data);
+        console.log('Got data from api back', data);
         //now reformat data
-        let reformattedArtCollection={"type": "FeatureCollection",
-                                      "features": []}
+        let reformattedArtCollection= []
         for (let artpiece of data){
             let reformattedArtPiece= {
               "type": "Feature",
               "properties": {
+                    "id": artpiece.accession_number,
                     "title": artpiece.display_title,
                     "artist": artpiece.artist,
                     "date": artpiece.creation_date,
@@ -98,15 +101,33 @@ class App extends Component {
                 ]
               }
             }
-            reformattedArtCollection.features.push(reformattedArtPiece)
+            reformattedArtCollection.push(reformattedArtPiece)
         }
         console.log("art coolection", reformattedArtCollection)
-
-        
+let roughObjSize = JSON.stringify(reformattedArtCollection).length;
+console.log(roughObjSize)
+        if (this._isMounted) {
         this.setState({
-            data: reformattedArtCollection,
+           
+          data: reformattedArtCollection,
+          
         });
-      });
+        
+        console.log("newly set data is", this.state.data)
+      
+      
+      
+          fetch('/api/mongodb/ArtCollection/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(this.state.data),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('this got  written to mongo art collection', data);
+        });
+}
+  });
   }
 
   render() {
@@ -125,7 +146,9 @@ class App extends Component {
             <Route exact path='/blog/' component={Blog} />
             <Route exact path='/write/' component={WriteArticle} />
           </Switch>
+          
           <MapContainer data={this.state.data}/>
+          
         </div>
 
       </div>
