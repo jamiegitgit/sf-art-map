@@ -12,6 +12,10 @@ const querystring = require('querystring');
 //make them use their id as _id
 //art collection2 currently has correct number of data
 
+//lsof -PiTCP -sTCP:LISTEN
+//sudo kill -15 32458
+
+
 
 /// YOUR ROUTES GO HERE!
 
@@ -69,10 +73,10 @@ app.post('/api/mongodb/:collectionName/', (request, response) => {
 app.put('/api/mongodb/:collectionName/', (request, response) => {
   const collectionName = request.params.collectionName;
   const data = request.body;
-  console.log("data:", data);
+  //console.log("data:", data);
   const query = request.query;
-  console.log("query:", query);
-  console.log("data.item.properties.id:", data.item.properties.id);
+ // console.log("query:", query);
+  //console.log("data.item.properties.id:", data.item.properties.id);
 
   // Due to a requirement of MongoDB, whenever we query based on _id field, we
   // have to do it like this using ObjectId
@@ -235,13 +239,13 @@ MongoClient.connect(MONGODB_URL, {useNewUrlParser: true}, (err, client) => {
 //        edited: true },
 //     geometry: { type: 'Point', coordinates: [Array] } } 
 
-              console.log("item:", item);//
+              //console.log("item:", item);//
                      axios.put('http://localhost:8080/api/mongodb/ArtCollectionServer/', 
                 {item}//
                   )
                   .then(function (response) {
                   //if (response.data.success = true){
-                   console.log("reposne:", response.data);
+                  // console.log("reposne:", response.data);
                   // }
                   })
                   .catch(function (error) {

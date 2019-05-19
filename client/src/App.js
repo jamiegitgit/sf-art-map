@@ -73,62 +73,18 @@ class App extends Component {
   
 
   fetchArtListing() {
-    console.log('Fetching data from API');
-    fetch('https://data.sfgov.org/resource/7rjr-9n9w.json')
+    console.log('Fetching data from Mongo');
+    fetch('/api/mongodb/ArtCollectionServer/')
       .then(response => response.json())
       .then(data => {
-        console.log('Got data from api back', data);
-        //now reformat data
-        let reformattedArtCollection= []
-        for (let artpiece of data){
-            let reformattedArtPiece= {
-              "type": "Feature",
-              "properties": {
-                    "id": artpiece.accession_number,
-                    "title": artpiece.display_title,
-                    "artist": artpiece.artist,
-                    "date": artpiece.creation_date,
-                    "medium": artpiece.media_support,
-                    "size": artpiece.display_dimensions,
-                    "location": artpiece.facility+ ", " +  artpiece.location_description,
-                    "address": artpiece.street_address
-                    },
-              "geometry": {
-                "type": "Point",
-                "coordinates": [
-                   (artpiece.point ? artpiece.point.latitude: null),
-                   (artpiece.point ? artpiece.point.longitude: null)
-
-                ]
-              }
-            }
-            reformattedArtCollection.push(reformattedArtPiece)
-        }
-        console.log("art coolection", reformattedArtCollection)
-let roughObjSize = JSON.stringify(reformattedArtCollection).length;
-console.log(roughObjSize)
-        if (this._isMounted) {
+        console.log('Got data back', data);
         this.setState({
-           
-          data: reformattedArtCollection,
-          
+          data: data,
         });
-        
-        console.log("newly set data is", this.state.data)
-      
-      //still want map to render from mongo data, not just api data
-          fetch('/api/mongodb/ArtCollection/', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(this.state.data),
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('this got  written to mongo art collection', data);
-        });
+        console.log("art collection", this.state.data)
+      });
+
 }
-  });
-  }
 
   render() {
     return (
