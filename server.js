@@ -4,10 +4,16 @@ const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 const app = express();
 app.use(express.json());
+const axios = require('axios')
 
-
+//axios to do fetch in server. then research mongo update multiple
+//changing node modules only works for me
 
 /// YOUR ROUTES GO HERE!
+
+
+        
+
 
 
 /////////////////////////////////////////////
@@ -41,10 +47,10 @@ app.get('/api/mongodb/:collectionName/', (request, response) => {
 // POST for creating a new item
 app.post('/api/mongodb/:collectionName/', (request, response) => {
   const collectionName = request.params.collectionName;
-  const data = request.body;
-
+  const data = request.body.data;
+ console.log("data sent to mongo is:", data)
   db.collection(collectionName)
-    .insert(data, (err, results) => {
+    .insertMany(data, (err, results) => {
       // Got data back.. send to client
       if (err) throw err;
 
@@ -142,8 +148,11 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/build/index.html'));
 });
 
+//
 
-// Set up configuration variables
+ 
+ 
+ // Set up configuration variables
 if (!process.env.MONGODB_URI) {
   console.log('- Error - Must specify the following env variables:');
   console.log("MONGODB_URI='mongodb://someUser:somePW@site.com:1234/someDB'");
@@ -162,7 +171,7 @@ MongoClient.connect(MONGODB_URL, {useNewUrlParser: true}, (err, client) => {
   db = client.db(mongoDbDatabaseName);
 
   // Start the server
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 8080;
   app.listen(PORT, () => {
     console.log(`
       *********************************************
@@ -172,4 +181,62 @@ MongoClient.connect(MONGODB_URL, {useNewUrlParser: true}, (err, client) => {
       *********************************************
     `);
   })
+  
+  
+  let reformattedArtCollection= []
+        axios.get('https://data.sfgov.org/resource/7rjr-9n9w.json')
+            .then(function (response) {
+            
+            console.log("response received")
+        for (let artpiece of response.data){
+            let reformattedArtPiece= {
+              "type": "Feature",
+              "properties": {
+                    "id": artpiece.accession_number,
+                    "title": artpiece.display_title,
+                    "artist": artpiece.artist,
+                    "date": artpiece.creation_date,
+                    "medium": artpiece.media_support,
+                    "size": artpiece.display_dimensions,
+                    "location": artpiece.facility+ ", " +  artpiece.location_description,
+                    "address": artpiece.street_address
+                    },
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                   (artpiece.point ? artpiece.point.latitude: null),
+                   (artpiece.point ? artpiece.point.longitude: null)
+
+                ]
+              }
+            }
+            reformattedArtCollection.push(reformattedArtPiece)
+        }
+            
+            console.log("refomatted art collection created" );
+            
+            
+              let data= reformattedArtCollection
+                 axios.post('http://localhost:8080/api/mongodb/ArtCollectionServer/', 
+            {data}
+              )
+              .then(function (response) {
+                console.log("reposne:", response.data);
+              })
+              .catch(function (error) {
+                console.log("axios error:", error);
+              });
+              
+              
+            
+        }).catch(function (error) {
+            console.log('break');
+            console.log(error);
+        });
+  
+  
+  
+
+
+  
 });

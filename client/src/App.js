@@ -70,6 +70,7 @@ class App extends Component {
     componentWillUnmount() {
     this._isMounted = false;
   }
+  
 
   fetchArtListing() {
     console.log('Fetching data from API');
@@ -116,7 +117,6 @@ console.log(roughObjSize)
         console.log("newly set data is", this.state.data)
       
       //still want map to render from mongo data, not just api data
-      
           fetch('/api/mongodb/ArtCollection/', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
