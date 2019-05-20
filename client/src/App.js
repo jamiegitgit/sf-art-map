@@ -71,6 +71,10 @@ constructor() {
     maptype: 'roadmap',
     data: null,
     userMarkerCoord: {lat: 37.773972, lng: -122.431297},
+    markers: [],
+    activeMarker: null,
+    infoWindowOpen: false,
+    activeInfoWindow: null,
   }
 }
 
@@ -90,6 +94,16 @@ constructor() {
       position: {lat: 37.773972, lng: -122.431297},
     });
     
+            google.maps.event.addListener(userMarker, 'click', (e)=> {
+              this.setState({
+              activeMarker: userMarker
+             });
+                     let infowindow = new google.maps.InfoWindow({
+            content: 'test string'
+        });
+             this.displayInfoWindow(map, userMarker, infowindow, e)
+        });
+    
         map.addListener('zoom_changed', () => {
       this.setState({
         zoom: map.getZoom(),
@@ -105,7 +119,10 @@ constructor() {
       map.addListener('click', (e) =>{
         this.placeMarker(e.latLng, map, userMarker);
       });
-    
+      
+
+
+  
 
 
     
@@ -122,14 +139,56 @@ constructor() {
   }
   
 
-    placeMarker(latLng, map, userMarker) {
 
+
+    placeMarker(latLng, map, userMarker) {
         this.setState({
         userMarkerCoord: latLng,
       });
       console.log(this.state.userMarkerCoord)
       userMarker.setPosition(this.state.userMarkerCoord)
     }
+    
+    displayInfoWindow(map, marker, infowindow, e){
+        if (this.state.activeInfoWindow){
+            this.state.activeInfoWindow.close()
+         } 
+
+            infowindow.open(map, this.state.activeMarker);
+              this.setState({
+                  infoWindowOpen: true,
+                  activeInfoWindow: infowindow,
+                 });
+     
+     
+     infowindow.addListener('closeclick', (e) =>{
+        infowindow.close();
+                  this.setState({
+              infoWindowOpen: false,
+              activeInfoWindow: null,
+             });
+      });
+    }
+    
+    createMarker(latLng, map) {
+        let marker = new google.maps.Marker({
+            map: map,
+            position: latLng,
+        });
+        let infowindow = new google.maps.InfoWindow({
+            content: 'test string'
+        });
+        google.maps.event.addListener(marker, 'click', (e)=> {
+              this.setState({
+              activeMarker: marker
+             });
+             this.displayInfoWindow(map, marker, infowindow, e)
+        });
+                  let newMarkerArray=this.state.markers.concat(marker)
+          this.setState({
+              markers: newMarkerArray
+             });
+}
 
 
   fetchArtListing(map) {
@@ -142,18 +201,14 @@ constructor() {
           data: data,
         });
         console.log("art collection from mongo", this.state.data)
-              for (let item of this.state.data) {
-        //console.log("item is:", item);
-          let coords = item.geometry.coordinates
-          var latLng = new google.maps.LatLng(coords[0],coords[1]);
-          var marker = new google.maps.Marker({
-            position: latLng,
-            map: map
-          });
-        }
-      });
-
-}
+          for (let item of this.state.data) {
+            //console.log("item is:", item);
+              let coords = item.geometry.coordinates
+              let latLng = new google.maps.LatLng(coords[0],coords[1]);
+              this.createMarker(latLng, map); 
+          }
+       });
+  };
 
 
   render() {
@@ -172,15 +227,10 @@ constructor() {
             <Route exact path='/blog/' component={Blog} />
             <Route exact path='/write/' component={WriteArticle} />
           </Switch>
-
           <div id='app'>
                 <div id='map' />
           </div>
-
-
-          
         </div>
-
       </div>
     );
   }
