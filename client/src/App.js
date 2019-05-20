@@ -1,12 +1,18 @@
+/* global google */
+
 import React, { Component } from 'react';
 import { Link, Switch, Route } from 'react-router-dom'
 
 import './App.css';
 
+
 import LandingPage from './components/pages/LandingPage/LandingPage.js';
 import Blog from './components/pages/Blog/Blog.js';
 import WriteArticle from './components/pages/WriteArticle/WriteArticle.js';
 import MapContainer from './components/MapContainer/MapContainer.js';
+import GoogleMap from './components/GoogleMap/GoogleMap.js';
+
+const google = window.google;
 
 let exampleData= [
     {
@@ -58,21 +64,75 @@ let exampleData= [
 
 
 class App extends Component {
-   state = {
-        data: exampleData,
-  };
+constructor() {
+  super();
+  this.state = {
+    zoom: 13,
+    maptype: 'roadmap',
+    data: null,
+    userMarkerCoord: {lat: 37.773972, lng: -122.431297},
+  }
+}
+
+
 
   componentDidMount() {
       this._isMounted = true;
-    this.fetchArtListing();
+
+    let map = new window.google.maps.Map(document.getElementById('map'), {
+      center: {lat: 37.773972, lng: -122.431297},
+      zoom: 13,
+      mapTypeId: 'roadmap',
+    });
+    
+    let userMarker = new window.google.maps.Marker({
+      map: map,
+      position: {lat: 37.773972, lng: -122.431297},
+    });
+    
+        map.addListener('zoom_changed', () => {
+      this.setState({
+        zoom: map.getZoom(),
+      });
+    });
+
+    map.addListener('maptypeid_changed', () => {
+      this.setState({
+        maptype: map.getMapTypeId(),
+      });
+    });
+    
+      map.addListener('click', (e) =>{
+        this.placeMarker(e.latLng, map, userMarker);
+      });
+    
+
+
+    
+    
+    this.fetchArtListing(map);
+
+
+    
   }
+  
   
     componentWillUnmount() {
     this._isMounted = false;
   }
   
 
-  fetchArtListing() {
+    placeMarker(latLng, map, userMarker) {
+
+        this.setState({
+        userMarkerCoord: latLng,
+      });
+      console.log(this.state.userMarkerCoord)
+      userMarker.setPosition(this.state.userMarkerCoord)
+    }
+
+
+  fetchArtListing(map) {
     console.log('Fetching data from Mongo');
     fetch('/api/mongodb/ArtCollectionServer/')
       .then(response => response.json())
@@ -81,10 +141,20 @@ class App extends Component {
         this.setState({
           data: data,
         });
-        console.log("art collection", this.state.data)
+        console.log("art collection from mongo", this.state.data)
+              for (let item of this.state.data) {
+        //console.log("item is:", item);
+          let coords = item.geometry.coordinates
+          var latLng = new google.maps.LatLng(coords[0],coords[1]);
+          var marker = new google.maps.Marker({
+            position: latLng,
+            map: map
+          });
+        }
       });
 
 }
+
 
   render() {
     return (
@@ -102,8 +172,12 @@ class App extends Component {
             <Route exact path='/blog/' component={Blog} />
             <Route exact path='/write/' component={WriteArticle} />
           </Switch>
-          
-          <MapContainer data={this.state.data}/>
+
+          <div id='app'>
+                <div id='map' />
+          </div>
+
+
           
         </div>
 

@@ -1,3 +1,18 @@
+#root, #app, #map {
+  height: 70%;
+}
+
+#state {
+  width: 200px;
+  float: left;
+}
+
+#map {
+
+  float: center;
+}
+
+
 body {
   margin: 0;
   padding: 0;
