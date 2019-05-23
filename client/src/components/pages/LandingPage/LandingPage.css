@@ -3,7 +3,7 @@
 }
 
 .LandingPage-header {
-  background-color: #282c34;
+  background-color: red;
   min-height: 70vh;
   display: flex;
   flex-direction: column;

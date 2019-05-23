@@ -1,9 +1,9 @@
 .App {
-    background: linear-gradient(to top, #ff00cc, #333399);
+    background-image: url("./assets/nadine-shaabana-1135853-unsplash.jpg");
     min-height: 100vh;
     display: grid;
-    grid-template-columns: 1fr minmax(auto, 800px) 1fr;
-    grid-template-rows: 100px auto;
+    grid-template-columns: 30px 1fr 30px;
+    grid-template-rows: 100px 200px auto;
     grid-row-gap: 10px;
     grid-column-gap: 10px;
     align-items: stretch;
@@ -25,11 +25,17 @@
 }
 
 .App-navigation h1 {
-    font-size: 36pt;
+    font-size: 48pt;
 }
 
-.Article-title {
-    font-size: 2em;
+.App-navigation p {
+    text-align: left;
+    font-size: 20pt;
+}
+
+.App-title {
+letter-spacing: 0.1em; 
+    font-family: 'Permanent Marker', cursive;
 }
 
 .App-navigation {
@@ -38,6 +44,7 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    color: yellow;
 }
 
 .App-navigation a {
@@ -48,8 +55,56 @@
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) inset;
 }
 
-.App-mainContent {
+.App-tag {
     grid-column: 2;
+    color: yellow;
+    font-family: 'Raleway', sans-serif;
+    font-size: 17pt;
+    margin: 0;
+}
+
+.App-mainContent {
+    display: grid;
+    grid-template-columns: 70% 1fr;
+    grid-column: 2;
+    grid-row:3;
+    height: 1000px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 15px 15px 0 0;
+    
+    
+}
+
+.Map {
+    border: 3px solid #442911;
+    border-radius: 15px;
+     box-shadow: 0 15px 10px 10px #685d53;
+     margin: 25px;
+}
+
+.List {
+    margin: 25px;
+    font-family: 'Raleway', sans-serif;
+
+}
+
+.List-child {
+    border-radius: 15px;
+    box-shadow: 0 15px 10px 5px #685d53;
+    background: white;
+        min-height: 100px;
+        margin: 10px;
+}
+
+.List-entries{
+    overflow: scroll;
+    max-height: 800px;
+}
+
+.List-entry{
+margin: 5px;
+margin-top: 10px;
+
 }
 
 
