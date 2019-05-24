@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "@google/markerclusterer": "^1.0.3",
+    "axios": "^0.18.0",
     "browserslist": "^4.6.0",
     "caniuse-lite": "^1.0.30000971",
     "express": "4.16.3",
