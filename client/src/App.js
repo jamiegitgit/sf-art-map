@@ -74,11 +74,17 @@ class App extends Component {
       zoom: 13,
       maptype: 'roadmap',
       data: exampleData,
-      userMarkerCoord: {lat: 37.773972, lng: -122.431297},
+      userMarkerCoord: null,
       markers: [],
       activeMarker: null,
       infoWindowOpen: false,
       activeInfoWindow: null,
+      inputTitle: "",
+      inputArtist: "",
+      inputLocation: "",
+      inputMedium: "",
+      inputSize: "",
+      inputYear:"",
     }
   }
 
@@ -143,7 +149,7 @@ class App extends Component {
      this.setState({
        userMarkerCoord: latLng,
      });
-     console.log(this.state.userMarkerCoord)
+     console.log(this.state.userMarkerCoord.lat())
      userMarker.setPosition(this.state.userMarkerCoord)
    }
 
@@ -167,28 +173,6 @@ class App extends Component {
        });
      });
    }
-
-
-   createMarker(latLng, map) {
-     let marker = new google.maps.Marker({
-       map: map,
-       position: latLng,
-     });
-     let infowindow = new google.maps.InfoWindow({
-       content: 'test string'
-     });
-     google.maps.event.addListener(marker, 'click', (e) => {
-       this.setState({
-         activeMarker: marker
-       });
-       this.displayInfoWindow(map, marker, infowindow, e)
-     });
-     let newMarkerArray = this.state.markers.concat(marker)
-     this.setState({
-       markers: newMarkerArray
-     });
-  }
-
 
   fetchArtListing() {
     console.log('Fetching data from Mongo');
@@ -254,8 +238,77 @@ class App extends Component {
         gridSize: size,
       });
   }
-  createMarker(latLng, map) {
 
+  onChangeTitle = (ev) => {
+    this.setState({
+      inputTitle: ev.target.value,
+    });
+  }
+  
+    onChangeArtist = (ev) => {
+    this.setState({
+      inputArtist: ev.target.value,
+    });
+  }
+  
+    onChangeMedium = (ev) => {
+    this.setState({
+      inputMedium: ev.target.value,
+    });
+  }
+  
+    onChangeLocation = (ev) => {
+    this.setState({
+      inputLocation: ev.target.value,
+    });
+  }
+  
+    onChangeYear = (ev) => {
+    this.setState({
+      inputYear: ev.target.value,
+    });
+  }
+  
+    onChangeSize = (ev) => {
+    this.setState({
+      inputSize: ev.target.value,
+    });
+  }
+  
+    submit = () => {
+    const formData = {
+              "type": "Feature",
+              "properties": {
+                    "id": Math.random() * (100000 - 1) + 1,
+                    "title": this.state.inputTitle,
+                    "artist": this.state.inputArtist,
+                    "date": this.state.inputYear,
+                    "medium": this.state.inputMedium,
+                    "size": this.state.inputSize,
+                    "location": this.state.inputLocation,
+                    "updated": "added"
+                    },
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                   this.state.userMarkerCoord.lat(),
+                   this.state.userMarkerCoord.lng()
+
+                ]
+              }
+            }
+            
+console.log("form data is:", formData)
+    fetch('/api/mongodb/ArtCollectionServer/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(formData),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Got this back', data);
+      });
+      this.fetchArtListing();
   }
 
   render() {
@@ -274,22 +327,62 @@ class App extends Component {
         <div className="List">
         <div className="List-child List-input">
         <h4> Add a Piece of Artwork </h4>
-        artist
-        location
-        medium
-        size
-        year
+        Click the map to the left to set location and fill out as much information as you have
+        <br/>
+        <br/>
+                  {this.state.userMarkerCoord !== null && (
+          <p>Coordinates: {this.state.userMarkerCoord.lat()},  {this.state.userMarkerCoord.lng()}</p>
+          )}<br/>
+                Title: <input
+            name="title"
+            placeholder="Within The Winds"
+            value={this.state.inputTitle}
+            onChange={this.onChangeTitle}
+          /><br/>
+                Artist: <input
+            name="artist"
+            placeholder="Barney Hallo"
+            value={this.state.inputArtist}
+            onChange={this.onChangeArtist}
+          />
+
+          <br/>
+        Location: <input
+            name="location"
+            placeholder="4th and King, Caltrain Station interior"
+            value={this.state.inputLocation}
+            onChange={this.onChangeLocation}
+          /><br/>
+        Medium: <input
+            name="medium"
+            placeholder="Bronze"
+            value={this.state.inputMedium}
+            onChange={this.onChangeMedium}
+          /><br/>
+        Size: <input
+            name="size"
+            placeholder="7ft tall"
+            value={this.state.inputSize}
+            onChange={this.onChangeSize}
+          /><br/>
+        Year: <input
+            name="year"
+            placeholder="1994"
+            value={this.state.inputYear}
+            onChange={this.onChangeYear}
+          /><br/>
+          <button onClick={this.submit}>Submit</button>
         </div>
         <div className= "List-child List-entries">
         {
           this.state.data.map((entry) => (
         <div className= "List-entry" id={entry.properties.id}>
                <h4>{entry.properties.title}</h4>
-               artist: {entry.properties.artist}
-        location: {entry.properties.location}
-        medium: {entry.properties.medium}
-        size: {entry.properties.size}
-        year: {entry.properties.year}
+               Artist: {entry.properties.artist} <br/>
+        Location: {entry.properties.location}<br/>
+        Medium: {entry.properties.medium}<br/>
+        Size: {entry.properties.size}<br/>
+        Year: {entry.properties.date}
         </div>
           ))
         }

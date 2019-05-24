@@ -6,6 +6,10 @@ const app = express();
 app.use(express.json());
 const axios = require('axios');
 const querystring = require('querystring');
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //then research mongo update multiple
 //to do: make it an update instead of just a write
@@ -55,9 +59,9 @@ app.get('/api/mongodb/:collectionName/', (request, response) => {
 // POST for creating a new item
 app.post('/api/mongodb/:collectionName/', (request, response) => {
   const collectionName = request.params.collectionName;
-  const data = request.body.data;
+  const data = request.body;
   db.collection(collectionName)
-    .insertMany(data, (err, results) => {
+    .insert(data, (err, results) => {
       // Got data back.. send to client
       if (err) throw err;
 

@@ -1,12 +1,21 @@
+#root{
+ height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
 .App {
-    background-image: url("./assets/nadine-shaabana-1135853-unsplash.jpg");
+    background-image: url("./assets/nadine-shaabana-1135853-unsplash.jpg"); 
     min-height: 100vh;
     display: grid;
     grid-template-columns: 30px 1fr 30px;
-    grid-template-rows: 100px 200px auto;
+    grid-template-rows: 100px 200px 1fr;
     grid-row-gap: 10px;
     grid-column-gap: 10px;
     align-items: stretch;
+
 }
 
 .App-navigation {
@@ -75,11 +84,13 @@ letter-spacing: 0.1em;
     
 }
 
-.Map {
+#map {
     border: 3px solid #442911;
     border-radius: 15px;
      box-shadow: 0 15px 10px 10px #685d53;
      margin: 25px;
+     max-height: 900px;
+     height: 100%;
 }
 
 .List {
@@ -88,23 +99,45 @@ letter-spacing: 0.1em;
 
 }
 
+.List-input h4 {
+    text-align: center;
+}
+
+.List-input {
+    padding: 5px;
+}
+
+
+.List-input p {
+    margin: 0;
+}
+
+.List-input button {
+display: block;
+    margin: auto;
+}
+
 .List-child {
     border-radius: 15px;
     box-shadow: 0 15px 10px 5px #685d53;
     background: white;
-        min-height: 100px;
+        min-height: 200px;
         margin: 10px;
 }
 
 .List-entries{
     overflow: scroll;
-    max-height: 800px;
+    max-height: 600px;
 }
 
 .List-entry{
 margin: 5px;
-margin-top: 10px;
+margin-top: 15px;
 
+}
+
+.List-entry h4 {
+margin-bottom: 5px;
 }
 
 
